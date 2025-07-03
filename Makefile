@@ -1,3 +1,5 @@
+.PHONY: build run sh stop rm clean
+
 build:
 	docker build -t mpragliola/fruits-and-vegetables -f docker/Dockerfile .
 
