@@ -6,3 +6,11 @@ run:
 
 sh:
 	docker exec -it fruits-and-vegetables sh
+
+stop:
+	docker stop fruits-and-vegetables
+
+rm:
+	docker rm fruits-and-vegetables
+
+clean: stop rm
