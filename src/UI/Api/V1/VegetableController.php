@@ -3,18 +3,23 @@
 namespace App\UI\Api\V1;
 
 use App\Command\AddVegetableCommand;
-use App\Query\Filter\ListVegetableQueryFilter;
+use App\Domain\ValueObject\Weight;
+use App\Domain\ValueObject\WeightUnits;
 use App\Query\ListVegetableQuery;
+use App\UI\Api\V1\DTO\AddVegetableRequestDTO;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Messenger\Stamp\HandledStamp;
 use Symfony\Component\Routing\Annotation\Route;
+use JMS\Serializer\SerializerInterface as JmsSerializer;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 #[Route('/api/v1/vegetable')]
 class VegetableController extends AbstractItemController
 {
     public function __construct(
+        private JMSSerializer $serializer,
+        private MessageBusInterface $commandBus,
         private MessageBusInterface $queryBus,
     ) {}
 
@@ -23,7 +28,7 @@ class VegetableController extends AbstractItemController
         Request $request,
     ): JsonResponse {
         $query = new ListVegetableQuery(
-            filter: new ListVegetableQueryFilter(
+            filter: new \App\Query\Filter\ListVegetableQueryFilter(
                 name: $request->query->get('name'),
                 minWeight: $request->query->get('minWeight'),
                 maxWeight: $request->query->get('maxWeight'),
@@ -38,24 +43,27 @@ class VegetableController extends AbstractItemController
         if (!$stamp instanceof HandledStamp) {
             throw new \RuntimeException('Expected a HandledStamp, got ' . get_class($stamp));
         }
-
         $vegetables = $stamp->getResult();
 
         return $this->json($vegetables);
     }
 
-    function add(
+    #[Route('', name: 'api_v1_vegetable_add', methods: ['POST'])]
+    public function add(
         Request $request,
     ): JsonResponse {
-        $command = new AddVegetableCommand(
-            name: $request->request->get('name'),
-            weight: $this->extractWeightFromRequest($request),
+        $dto = $this->serializer->deserialize(
+            $request->getContent(),
+            AddVegetableRequestDTO::class,
+            'json',
         );
 
-        $this->queryBus->dispatch($command);
+        $command = new AddVegetableCommand(
+            name: $dto->name,
+            weight: new Weight($dto->value, WeightUnits::from($dto->unit)),
+        );
+        $this->commandBus->dispatch($command);
 
-        return $this->json([
-            'status' => 'success',
-        ], JsonResponse::HTTP_CREATED);
+        return new JsonResponse(['status' => 'success'], JsonResponse::HTTP_CREATED);
     }
 }

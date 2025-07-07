@@ -21,14 +21,4 @@ abstract class AbstractItemController extends AbstractController
             default => throw new \InvalidArgumentException('Invalid unit: ' . $unit),
         };
     }
-
-    protected function getQueryBus(): MessageBusInterface
-    {
-        return $this->container->get('messenger.bus.query.bus');
-    }
-
-    protected function getCommandBus(): MessageBusInterface
-    {
-        return $this->container->get('messenger.bus.command.bus');
-    }
 }

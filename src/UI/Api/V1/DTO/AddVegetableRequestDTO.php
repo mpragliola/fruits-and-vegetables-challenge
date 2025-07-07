@@ -7,4 +7,4 @@ namespace App\UI\Api\V1\DTO;
 use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
-final class AddFruitRequestDTO extends AbstractAddItemRequest {}
+final class AddVegetableRequestDTO extends AbstractAddItemRequest {}
