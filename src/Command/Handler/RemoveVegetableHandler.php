@@ -4,9 +4,11 @@ namespace App\Command\Handler;
 
 use App\Command\RemoveVegetableCommand\RemoveVegetableCommand;
 use App\Domain\Repository\VegetableRepositoryInterface;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
-final class RemoveVegetableHandler implements MessageHandlerInterface
+#[AsMessageHandler(bus: 'command.bus')]
+final class RemoveVegetableHandler
 {
     public function __construct(
         private readonly VegetableRepositoryInterface $vegetableRepository,

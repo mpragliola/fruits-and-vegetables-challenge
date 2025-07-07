@@ -4,9 +4,10 @@ namespace App\Query\Handler;
 
 use App\Domain\Repository\FruitRepositoryInterface;
 use App\Query\ListFruitsQuery;
-use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
-final class ListFruitsHandler implements MessageHandlerInterface
+#[AsMessageHandler(bus: 'query.bus')]
+final class ListFruitsHandler
 {
     public function __construct(private FruitRepositoryInterface $repo) {}
 
