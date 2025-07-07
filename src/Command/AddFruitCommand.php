@@ -1,0 +1,17 @@
+<?php
+
+namespace App\Command;
+
+use App\Domain\ValueObject\Weight;
+use Symfony\Component\Validator\Constraints as Assert;
+
+final class AddFruitCommand
+{
+    public function __construct(
+        #[Assert\NotBlank(message: 'Name cannot be blank.')]
+        #[Assert\Length(max: 150, maxMessage: 'Name cannot exceed {{ limit }} characters.')]
+        public readonly string $name,
+
+        public readonly Weight $weight,
+    ) {}
+}
