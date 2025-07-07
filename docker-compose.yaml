@@ -1,0 +1,44 @@
+services:
+  php:
+    container_name: ${SERVICE_NAME}-php
+    build:
+      context: .
+      dockerfile: infra/docker/Dockerfile
+      target: dev
+    env_file:
+      - ./.env            
+      - ./.env.local
+    volumes:
+      - .:/app
+      - type: bind
+        source: "${SSH_AUTH_SOCK:?SSH_AUTH_SOCK is not set}"
+        target: /ssh-agent
+    environment:
+      APP_ENV: ${APP_ENV:-dev}
+      SSH_AUTH_SOCK: /ssh-agent
+
+  nginx:
+    container_name: ${SERVICE_NAME}-nginx
+    image: nginx:latest
+    ports:
+      - "${HTTP_PORT:-80}:80"
+    volumes:
+      - ./infra/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      - .:/app
+    depends_on:
+      - php
+      
+  mysql:
+    image: mysql:8.0.42
+    container_name: ${SERVICE_NAME}-mysql
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      # Change in production!
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpass}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+
