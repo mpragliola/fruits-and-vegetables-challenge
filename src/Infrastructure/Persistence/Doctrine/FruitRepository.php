@@ -39,12 +39,18 @@ final class FruitRepository implements FruitRepositoryInterface
         }
 
         $queryBuilder = $this->em->getRepository(Fruit::class)->createQueryBuilder('f');
-        !$filter->name ?? $queryBuilder->andWhere('f.name LIKE :name')
-            ->setParameter('name', '%' . $filter->name . '%');
-        !$filter->minWeight ?? $queryBuilder->andWhere('f.weight >= :minWeight')
-            ->setParameter('minWeight', $filter->minWeight);
-        !$filter->maxWeight ?? $queryBuilder->andWhere('f.weight <= :maxWeight')
-            ->setParameter('maxWeight', $filter->maxWeight);
+        if ($filter->name) {
+            $queryBuilder->andWhere('f.name LIKE :name')
+                ->setParameter('name', '%' . $filter->name . '%');
+        }
+        if ($filter->minWeight) {
+            $queryBuilder->andWhere('f.weight.unitValue >= :minWeight')
+                ->setParameter('minWeight', $filter->minWeight);
+        }
+        if ($filter->maxWeight) {
+            $queryBuilder->andWhere('f.weight.unitValue <= :maxWeight')
+                ->setParameter('maxWeight', $filter->maxWeight);
+        }
 
         return $queryBuilder->getQuery()->getResult();
     }

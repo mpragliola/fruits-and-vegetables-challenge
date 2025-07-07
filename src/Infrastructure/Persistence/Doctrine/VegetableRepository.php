@@ -28,16 +28,24 @@ final class VegetableRepository implements VegetableRepositoryInterface
     public function list(ListVegetableQueryFilter $filter): array
     {
         if ($filter->isEmpty()) {
-            return $this->em->getRepository(Vegetable::class)->findAll();
+            $vegetables = $this->em->getRepository(Vegetable::class)->findAll();
+
+            return $vegetables ?: [];
         }
 
         $queryBuilder = $this->em->getRepository(Vegetable::class)->createQueryBuilder('f');
-        !$filter->name ?? $queryBuilder->andWhere('f.name LIKE :name')
-            ->setParameter('name', '%' . $filter->name . '%');
-        !$filter->minWeight ?? $queryBuilder->andWhere('f.weight >= :minWeight')
-            ->setParameter('minWeight', $filter->minWeight);
-        !$filter->maxWeight ?? $queryBuilder->andWhere('f.weight <= :maxWeight')
-            ->setParameter('maxWeight', $filter->maxWeight);
+        if ($filter->name) {
+            $queryBuilder->andWhere('f.name LIKE :name')
+                ->setParameter('name', '%' . $filter->name . '%');
+        }
+        if ($filter->minWeight) {
+            $queryBuilder->andWhere('f.weight.unitValue >= :minWeight')
+                ->setParameter('minWeight', $filter->minWeight);
+        }
+        if ($filter->maxWeight) {
+            $queryBuilder->andWhere('f.weight.unitValue <= :maxWeight')
+                ->setParameter('maxWeight', $filter->maxWeight);
+        }
 
         return $queryBuilder->getQuery()->getResult();
     }
