@@ -2,19 +2,18 @@
 
 namespace App\UI\Api\V1;
 
+use App\Command\AddFruitCommand;
+use App\Domain\ValueObject\Weight;
+use App\Domain\ValueObject\WeightUnits;
 use App\Query\ListFruitQuery;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Messenger\HandleTrait;
-use Symfony\Component\Messenger\MessageBus;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Messenger\Stamp\HandledStamp;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Contracts\Service\Attribute\Required;
 
 #[Route('/api/v1/fruit')]
-class FruitController extends AbstractController
+class FruitController extends AbstractItemController
 {
     public function __construct(
         private MessageBusInterface $queryBus,
@@ -43,5 +42,18 @@ class FruitController extends AbstractController
         $fruits = $stamp->getResult();
 
         return $this->json($fruits);
+    }
+
+    #[Route('', name: 'api_v1_fruit_add', methods: ['POST'])]
+    public function add(
+        Request $request,
+    ): JsonResponse {
+        $command = new AddFruitCommand(
+            name: $request->request->get('name'),
+            weight: $this->extractWeightFromRequest($request),
+        );
+        $this->queryBus->dispatch($command);
+
+        return new JsonResponse(['status' => 'success'], JsonResponse::HTTP_CREATED);
     }
 }
