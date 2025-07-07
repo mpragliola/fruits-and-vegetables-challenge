@@ -16,6 +16,13 @@ services:
     environment:
       APP_ENV: ${APP_ENV:-dev}
       SSH_AUTH_SOCK: /ssh-agent
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost/api/v1/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
 
   nginx:
     container_name: ${SERVICE_NAME}-nginx
