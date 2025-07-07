@@ -1,4 +1,5 @@
 .vscode/
+data/
 
 ###> symfony/framework-bundle ###
 /.env.local
@@ -19,3 +20,7 @@
 /phpunit.xml
 .phpunit.result.cache
 ###< phpunit/phpunit ###
+
+###> phpstan/phpstan ###
+phpstan.neon
+###< phpstan/phpstan ###
