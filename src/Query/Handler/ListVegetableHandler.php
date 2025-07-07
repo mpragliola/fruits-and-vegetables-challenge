@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Query\Handler;
 
 use App\Domain\Repository\VegetableRepositoryInterface;
