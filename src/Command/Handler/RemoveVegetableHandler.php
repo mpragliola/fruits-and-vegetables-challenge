@@ -2,10 +2,9 @@
 
 namespace App\Command\Handler;
 
-use App\Command\RemoveVegetableCommand\RemoveVegetableCommand;
+use App\Command\RemoveVegetableCommand;
 use App\Domain\Repository\VegetableRepositoryInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
-use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
 #[AsMessageHandler(bus: 'command.bus')]
 final class RemoveVegetableHandler

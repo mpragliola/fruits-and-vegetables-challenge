@@ -9,9 +9,9 @@ final class AddVegetableCommand
 {
     public function __construct(
         #[Assert\NotBlank(message: 'Name cannot be blank.')]
-        #[Assert\Length(max: 150, maxMessage: 'Name cannot exceed {{ limit }} characters.')]
+        #[Assert\Length(min: 1, max: 150)]
         public readonly string $name,
-
+        #[Assert\Valid]
         public readonly Weight $weight,
     ) {}
 }
