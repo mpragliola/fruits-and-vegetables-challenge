@@ -17,6 +17,3 @@ FROM base AS dev
 
 # extra tools just for development
 RUN apk add --no-cache openssh
-
-# forwarded agent inside container
-ENV SSH_AUTH_SOCK=/ssh-agent

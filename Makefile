@@ -10,6 +10,16 @@ load-dev-env:
 	$(eval include .env.local)
 	$(eval export)
 
+# Docker compose
+up:
+	docker compose up
+
+upd:
+	docker compose up -d --build
+
+down:
+	docker compose down
+
 # Build the Docker image for the service
 build: load-dev-env
 	docker build -t $$SERVICE_NAME:$$LAST_COMMIT -f infra/docker/Dockerfile .
