@@ -4,6 +4,7 @@ namespace App\Domain\ValueObject;
 
 use InvalidArgumentException;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Embeddable]
 final class Weight
@@ -14,6 +15,7 @@ final class Weight
 
     // @TODO: we could try use first-class enum support, but for now we play safe
     public function __construct(
+        #[Assert\Positive(message: 'Weight value must be positive.')]
         private float $value,
         #[ORM\Column(type: 'string', length: 10, enumType: WeightUnits::class)]
         private WeightUnits $unit,
