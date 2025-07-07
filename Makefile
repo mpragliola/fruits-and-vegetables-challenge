@@ -1,5 +1,7 @@
 .PHONY: build run sh stop rm clean load-dev-env gitref 
 	test phpunit phpcs phpstan phpunit-ci phpcs-ci phpstan-ci
+	up upd down build shell build-svc build-svc-nc tag push 
+	db-create-schema db-drop-schema db-migrate db-migrate-dry-run db-migrate-status db-migrate-diff db-init
 
 # Get git commit hash and tag, will be used to tag the Docker image
 LAST_COMMIT := $(shell git rev-parse --short HEAD)
@@ -23,6 +25,8 @@ down:
 	docker compose down
 build:
 	docker compose build
+shell:
+	docker compose exec php sh
 
 # Build the Docker image for the service
 build-svc: load-dev-env
