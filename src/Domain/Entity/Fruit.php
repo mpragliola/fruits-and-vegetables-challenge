@@ -2,7 +2,8 @@
 
 namespace App\Domain\Entity;
 
-use App\Domain\ValueObject\Weight;
-use Symfony\Component\Uid\Uuid;
+use Doctrine\ORM\Mapping as ORM;
 
+#[ORM\Entity]
+#[ORM\Table(name: 'fruit')]
 final class Fruit extends AbstractItem {}

@@ -3,14 +3,21 @@
 namespace App\Domain\ValueObject;
 
 use InvalidArgumentException;
+use Doctrine\ORM\Mapping as ORM;
 
+#[ORM\Embeddable]
 final class Weight
 {
     /** @var float Weight in grams */
+    #[ORM\Column(type: 'float')]
     private float $unitValue;
 
-    public function __construct(private float $value, private WeightUnits $unit)
-    {
+    // @TODO: we could try use first-class enum support, but for now we play safe
+    public function __construct(
+        private float $value,
+        #[ORM\Column(type: 'string', length: 10, enumType: WeightUnits::class)]
+        private WeightUnits $unit,
+    ) {
         if ($value < 0) {
             throw new InvalidArgumentException('Weight value cannot be negative.');
         }
