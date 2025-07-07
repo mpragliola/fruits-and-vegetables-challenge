@@ -2,11 +2,11 @@
 
 namespace App\Query;
 
-use App\Query\Filter\ListVegetablesQueryFilter;
+use App\Query\Filter\ListVegetableQueryFilter;
 
-final class ListVegetablesQuery
+final class ListVegetableQuery
 {
     public function __construct(
-        public readonly ListVegetablesQueryFilter $filter = new ListVegetablesQueryFilter(),
+        public readonly ListVegetableQueryFilter $filter = new ListVegetableQueryFilter(),
     ) {}
 }

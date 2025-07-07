@@ -2,12 +2,11 @@
 
 namespace App\Query;
 
-use App\Query\Filter\ListFruitsQueryFilter;
-use App\Query\Filter\ListItemsQueryFilter;
+use App\Query\Filter\ListFruitQueryFilter;
 
-final class ListFruitsQuery
+final class ListFruitQuery
 {
     public function __construct(
-        public readonly ListFruitsQueryFilter $filter = new ListFruitsQueryFilter(),
+        public readonly ListFruitQueryFilter $filter = new ListFruitQueryFilter(),
     ) {}
 }

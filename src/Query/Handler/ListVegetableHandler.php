@@ -7,17 +7,13 @@ use App\Query\ListVegetablesQuery;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler(bus: 'query.bus')]
-final class ListVegetablesHandler
+final class ListVegetableHandler
 {
     public function __construct(
         private VegetableRepositoryInterface $vegetableRepository,
     ) {}
 
-    /**
-     * @param ListVegetablesQuery $query
-     * @return array
-     */
-    public function __invoke(ListVegetablesQuery $query): array
+    public function __invoke(ListVegetableQuery $query): array
     {
         $filter = $query->filter;
 
