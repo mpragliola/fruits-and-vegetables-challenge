@@ -1,9 +1,13 @@
 .PHONY: build run sh stop rm clean load-dev-env gitref 
 	test phpunit phpcs phpstan phpunit-ci phpcs-ci phpstan-ci
 
+# Get git commit hash and tag, will be used to tag the Docker image
 LAST_COMMIT := $(shell git rev-parse --short HEAD)
 TAG := $(shell git describe --tags --abbrev=0)
 export LAST_COMMIT TAG
+
+# I usually add some helper for repetitive commands in Makefile
+EXEC_SYMFONY := docker compose exec -T php bin/console
 
 load-dev-env:
 	$(eval include .env)
@@ -14,7 +18,7 @@ load-dev-env:
 up:
 	docker compose up
 upd:
-	docker compose up -d --build
+	docker compose up -d
 down:
 	docker compose down
 build:
@@ -53,6 +57,24 @@ rm: load-dev-env
 
 # Stop and remove the Docker container
 clean: stop rm
+
+# Push container to the registry
+push: load-dev-env
+	docker push $$SERVICE_NAME:$$LAST_COMMIT
+
+# ---------------
+# MIGRATION
+# ---------------
+db-create-schema:
+	${EXEC_SYMFONY} doctrine:schema:create
+db-drop-schema:
+	${EXEC_SYMFONY} doctrine:schema:drop --force
+db-migrate:
+	${EXEC_SYMFONY} doctrine:migrations:migrate --no-interaction
+db-migrate-dry-run:
+	${EXEC_SYMFONY} doctrine:migrations:migrate --dry-run --no-interaction
+db-migrate-status:
+	${EXEC_SYMFONY} doctrine:migrations:status
 
 # ---------------
 # CI/CD & TESTING
