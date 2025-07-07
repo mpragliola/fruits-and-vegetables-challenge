@@ -1,7 +1,11 @@
-.PHONY: build run sh stop rm clean
+.PHONY: build run sh stop rm clean load-env
 
-build:
-	docker build -t mpragliola/fruits-and-vegetables -f docker/Dockerfile .
+load-env:
+	$(eval include .env)
+	$(eval export)
+
+build: load-env
+	docker build -t $$SERVICE_NAME -f docker/Dockerfile . --no-cache
 
 run:
 	docker run -d --name fruits-and-vegetables -p 8080:80 mpragliola/fruits-and-vegetables
