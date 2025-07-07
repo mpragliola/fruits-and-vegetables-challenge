@@ -13,18 +13,18 @@ load-dev-env:
 # Docker compose
 up:
 	docker compose up
-
 upd:
 	docker compose up -d --build
-
 down:
 	docker compose down
+build:
+	docker compose build
 
 # Build the Docker image for the service
-build: load-dev-env
+build-svc: load-dev-env
 	docker build -t $$SERVICE_NAME:$$LAST_COMMIT -f infra/docker/Dockerfile .
 
-build-nc: load-dev-env
+build-svc-nc: load-dev-env
 	docker build -t $$SERVICE_NAME:$$LAST_COMMIT -f infra/docker/Dockerfile . --no-cache
 
 # Tag service image with the last commit hash and optionally with a tag
