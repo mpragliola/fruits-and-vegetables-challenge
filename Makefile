@@ -22,7 +22,7 @@ endif
 
 # Run the service in a Docker container
 run: load-env
-	docker run -d --name $$SERVICE_NAME -p 8080:80 $$SERVICE_NAME
+	docker run -d --name $$SERVICE_NAME -p $$HTTP_PORT:80 $$SERVICE_NAME
 
 # Shell - we use Alpine, so no bash (although we can add it)
 sh: load-env
@@ -38,3 +38,34 @@ rm: load-env
 
 # Stop and remove the Docker container
 clean: stop rm
+
+# -----------
+# CI/CD
+# -----------
+
+# Targets for local development
+
+phpunit:
+	bin/phpunit
+phpcs:
+	bin/phpcs --standard=PSR12 --extensions=php --ignore=vendor,tests,build,docs .
+phpstan:
+	bin/phpstan analyse --memory-limit=1G --configuration=phpstan.neon
+
+# Targets for CI/CD
+
+phpunit-ci:
+phpcs-ci:
+phpstan-ci:
+
+# Execute tests based on the CI environment
+ifeq ($(CI),true)
+test: phpunit-ci phpcs-ci phpstan-ci
+else
+test: phpunit phpcs phpstan
+endif
+
+
+# -----------
+# TESTS
+# -----------
