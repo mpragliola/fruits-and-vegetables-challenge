@@ -1,0 +1,6 @@
+.vscode
+*.md
+**/docker-compose.*.yaml
+infra
+.github
+.git*
