@@ -8,3 +8,15 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 WORKDIR /app
 
 COPY . .
+
+# --------------------------
+# Dev stage
+# --------------------------
+
+FROM base AS dev
+
+# extra tools just for development
+RUN apk add --no-cache openssh
+
+# forwarded agent inside container
+ENV SSH_AUTH_SOCK=/ssh-agent

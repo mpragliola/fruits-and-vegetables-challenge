@@ -5,6 +5,7 @@ services:
     build:
       context: .
       dockerfile: infra/docker/Dockerfile
+      target: dev
     # Forward ssh
     volumes:
       - .:/app
