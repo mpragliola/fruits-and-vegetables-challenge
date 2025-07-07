@@ -2,18 +2,9 @@
 
 namespace App\Domain\ValueObject;
 
-enum WeightUnits 
+enum WeightUnits: string
 {
-    case GRAMS;
-    case KILOGRAMS;
-    case POUNDS;
-
-    public function toString(bool $short = true): string
-    {
-        return match ($this) {
-            self::GRAMS => $short ? 'g' : 'grams',
-            self::KILOGRAMS => $short ? 'kg' : 'kilograms',
-            self::POUNDS => $short ? 'lbs' : 'pounds',
-        };
-    }
+    case GRAMS = 'g';
+    case KILOGRAMS = 'kg';
+    case POUNDS = 'lb';
 }

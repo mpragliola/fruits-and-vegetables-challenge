@@ -6,6 +6,7 @@ use App\Domain\ValueObject\Weight;
 use App\Domain\ValueObject\WeightUnits;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 abstract class AbstractItemController extends AbstractController
 {
@@ -19,5 +20,15 @@ abstract class AbstractItemController extends AbstractController
             'kg' => new Weight($weightValue, WeightUnits::KILOGRAMS),
             default => throw new \InvalidArgumentException('Invalid unit: ' . $unit),
         };
+    }
+
+    protected function getQueryBus(): MessageBusInterface
+    {
+        return $this->container->get('messenger.bus.query.bus');
+    }
+
+    protected function getCommandBus(): MessageBusInterface
+    {
+        return $this->container->get('messenger.bus.command.bus');
     }
 }

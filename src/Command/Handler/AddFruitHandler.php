@@ -6,10 +6,9 @@ use App\Command\AddFruitCommand;
 use App\Domain\Entity\Fruit;
 use App\Domain\Repository\FruitRepositoryInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
-use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
 #[AsMessageHandler(bus: 'command.bus')]
-final class AddFruitHandler implements MessageHandlerInterface
+final class AddFruitHandler
 {
     public function __construct(
         private readonly FruitRepositoryInterface $fruitRepository,

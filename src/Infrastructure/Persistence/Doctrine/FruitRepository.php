@@ -33,7 +33,9 @@ final class FruitRepository implements FruitRepositoryInterface
     public function list(ListFruitQueryFilter $filter): array
     {
         if ($filter->isEmpty()) {
-            return $this->em->getRepository(Fruit::class)->findAll();
+            $fruits = $this->em->getRepository(Fruit::class)->findAll();
+
+            return $fruits ?: [];
         }
 
         $queryBuilder = $this->em->getRepository(Fruit::class)->createQueryBuilder('f');

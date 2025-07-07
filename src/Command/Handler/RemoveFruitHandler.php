@@ -4,10 +4,10 @@ namespace App\Command\Handler;
 
 use App\Command\RemoveFruitCommand;
 use App\Domain\Repository\FruitRepositoryInterface;
-use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler(bus: 'command.bus')]
-final class RemoveFruitHandler implements MessageHandlerInterface
+final class RemoveFruitHandler
 {
     public function __construct(
         private readonly FruitRepositoryInterface $fruitRepository,

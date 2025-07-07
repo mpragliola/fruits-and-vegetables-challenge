@@ -6,16 +6,20 @@ use App\Command\AddFruitCommand;
 use App\Domain\ValueObject\Weight;
 use App\Domain\ValueObject\WeightUnits;
 use App\Query\ListFruitQuery;
+use App\UI\Api\V1\DTO\AddFruitRequestDTO;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Messenger\Stamp\HandledStamp;
 use Symfony\Component\Routing\Annotation\Route;
+use JMS\Serializer\SerializerInterface as JmsSerializer;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 #[Route('/api/v1/fruit')]
 class FruitController extends AbstractItemController
 {
     public function __construct(
+        private JMSSerializer $serializer,
+        private MessageBusInterface $commandBus,
         private MessageBusInterface $queryBus,
     ) {}
 
@@ -48,11 +52,17 @@ class FruitController extends AbstractItemController
     public function add(
         Request $request,
     ): JsonResponse {
-        $command = new AddFruitCommand(
-            name: $request->request->get('name'),
-            weight: $this->extractWeightFromRequest($request),
+        $dto = $this->serializer->deserialize(
+            $request->getContent(),
+            AddFruitRequestDTO::class,
+            'json',
         );
-        $this->queryBus->dispatch($command);
+
+        $command = new AddFruitCommand(
+            name: $dto->name,
+            weight: new Weight($dto->value, WeightUnits::from($dto->unit)),
+        );
+        $this->commandBus->dispatch($command);
 
         return new JsonResponse(['status' => 'success'], JsonResponse::HTTP_CREATED);
     }

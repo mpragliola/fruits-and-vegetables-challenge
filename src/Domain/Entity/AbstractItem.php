@@ -10,13 +10,13 @@ use Doctrine\ORM\Mapping as ORM;
 abstract class AbstractItem
 {
     #[ORM\Id, ORM\Column(type: 'uuid', unique: true)]
-    protected string $id;
+    public string $id;
 
     public function __construct(
         #[ORM\Column(type: 'string', length: 150)]
-        protected string $name,
+        public string $name,
         #[ORM\Embedded(class: Weight::class)]
-        protected Weight $weight
+        public Weight $weight
     ) {
         $this->id = Uuid::v4()->toRfc4122();
     }
