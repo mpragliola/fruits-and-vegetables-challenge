@@ -1,10 +1,10 @@
 services:
   php:
+    container_name: ${SERVICE_NAME}-php
     build:
       context: .
       dockerfile: infra/docker/Dockerfile
       target: dev
-    # Forward ssh
     volumes:
       - .:/app
       - type: bind
@@ -14,6 +14,7 @@ services:
       - SSH_AUTH_SOCK=/ssh-agent
 
   nginx:
+    container_name: ${SERVICE_NAME}-nginx
     image: nginx:latest
     ports:
       - "${HTTP_PORT:-80}:80"
