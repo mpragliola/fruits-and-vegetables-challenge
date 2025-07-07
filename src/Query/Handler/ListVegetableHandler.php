@@ -3,7 +3,7 @@
 namespace App\Query\Handler;
 
 use App\Domain\Repository\VegetableRepositoryInterface;
-use App\Query\ListVegetablesQuery;
+use App\Query\ListVegetableQuery;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler(bus: 'query.bus')]

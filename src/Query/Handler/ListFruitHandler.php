@@ -3,7 +3,7 @@
 namespace App\Query\Handler;
 
 use App\Domain\Repository\FruitRepositoryInterface;
-use App\Query\ListFruitsQuery;
+use App\Query\ListFruitQuery;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler(bus: 'query.bus')]
