@@ -75,6 +75,9 @@ db-migrate-dry-run:
 	${EXEC_SYMFONY} doctrine:migrations:migrate --dry-run --no-interaction
 db-migrate-status:
 	${EXEC_SYMFONY} doctrine:migrations:status
+db-migrate-diff:
+	${EXEC_SYMFONY} doctrine:migrations:diff
+db-init: db-drop-schema db-create-schema db-migrate
 
 # ---------------
 # CI/CD & TESTING
