@@ -1,19 +1,24 @@
-.PHONY: build run sh stop rm clean load-env gitref
+.PHONY: build run sh stop rm clean load-dev-env gitref 
+	test phpunit phpcs phpstan phpunit-ci phpcs-ci phpstan-ci
 
 LAST_COMMIT := $(shell git rev-parse --short HEAD)
 TAG := $(shell git describe --tags --abbrev=0)
 export LAST_COMMIT TAG
 
-load-env:
+load-dev-env:
 	$(eval include .env)
+	$(eval include .env.local)
 	$(eval export)
 
 # Build the Docker image for the service
-build: load-env
-	docker build -t $$SERVICE_NAME:$$LAST_COMMIT -f docker/Dockerfile . --no-cache
+build: load-dev-env
+	docker build -t $$SERVICE_NAME:$$LAST_COMMIT -f infra/docker/Dockerfile .
+
+build-nc: load-dev-env
+	docker build -t $$SERVICE_NAME:$$LAST_COMMIT -f infra/docker/Dockerfile . --no-cache
 
 # Tag service image with the last commit hash and optionally with a tag
-tag: load-env
+tag: load-dev-env
 	echo $$LAST_COMMIT
 	echo $$TAG
 ifdef TAG
@@ -21,27 +26,27 @@ ifdef TAG
 endif
 
 # Run the service in a Docker container
-run: load-env
+run: load-dev-env
 	docker run -d --name $$SERVICE_NAME -p $$HTTP_PORT:80 $$SERVICE_NAME
 
 # Shell - we use Alpine, so no bash (although we can add it)
-sh: load-env
+sh: load-dev-env
 	docker exec -it $$SERVICE_NAME sh
 
 # Stop the Docker container
-stop: load-env
+stop: load-dev-env
 	docker stop $$SERVICE_NAME
 
 # Remove the Docker container
-rm: load-env
+rm: load-dev-env
 	docker rm $$SERVICE_NAME
 
 # Stop and remove the Docker container
 clean: stop rm
 
-# -----------
-# CI/CD
-# -----------
+# ---------------
+# CI/CD & TESTING
+# ---------------
 
 # Targets for local development
 
@@ -65,7 +70,3 @@ else
 test: phpunit phpcs phpstan
 endif
 
-
-# -----------
-# TESTS
-# -----------
